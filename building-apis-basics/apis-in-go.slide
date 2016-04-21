@@ -21,8 +21,8 @@ https://matryer.com/
 * Purpose of this talk
 
 - Learn Go in 5 minutes
-- Building APIs in Go
-- Real code running on Google App Engine
+- Find out why Go is great for Building APIs
+- Explore Google App Engine as an ops-less deployment option
 
 Goal is to convince you to build your next API in Go.
 
@@ -216,13 +216,16 @@ from [[http://golang.org/src/net/http/server.go?s=1517:2599#L48]]
 
 More at [[https://golang.org/pkg/net/http/#Request]]
 
-* Building a simple comments API
+* Let's build an API for comments
 
 * MVP
 
 - API to accept comments via `POST` `/comments`
 - Deliver comments via `GET` `/comments`
 - Deploy to Google App Engine
+- Use Google's Datastore to store comment data
+
+Start your timers, this is quick...
 
 * Setup project
 
@@ -232,7 +235,7 @@ More at [[https://golang.org/pkg/net/http/#Request]]
 
 `app.yaml`
 
-  application: commentsapp
+  application: comments-demo
   version:     1
   runtime:     go
   api_version: go1
@@ -253,6 +256,11 @@ More at [[https://golang.org/pkg/net/http/#Request]]
 Create a `struct` to hold each comment
 
   package comments
+
+  import (
+    "time"
+    "google.golang.org/appengine/datastore"
+  )
 
   type Comment struct {
   	Key     *datastore.Key `json:"id" datastore:"-"`
@@ -351,7 +359,7 @@ Adding comments with `curl`:
 
 * Viewing comments data in a browser
 
-`GET` [[http://localhost:8080/comments]]
+Open [[http://localhost:8080/comments]]
 
   [{
   	"id": "ag9kZXZ-Y29tbWVudHNhcHByFAsSB0NvbW1lbnQYgICAgICAgAsM",
@@ -369,3 +377,30 @@ Adding comments with `curl`:
   	"author": "Mat",
   	"created": "2016-04-21T17:32:50.203193Z"
   }]
+
+* It's real
+
+The API code has been deployed to Google App Engine.
+
+Please send your comments now:
+
+  curl -XPOST -d '{"body":"Hi Progscon","author":"Mat"}' http://comments-demo.appspot.com/comments
+
+See what others are posting by visiting [[http://comments-demo.appspot.com/comments]]
+
+* Summary
+
+- Go's simplicity makes writing APIs easy
+- Write functions that accept `http.ResponseWriter` and `http.Request`
+- Google App Engine is an ops-less way of deploying code
+- If our app takes off, Google can scale it for us
+
+What we did:
+
+- Built a real RESTful Comments API that speaks JSON
+- Used Go's standard library to handle requests
+- Routed POST and GET requests differently
+- Added code to create comments and save them in Google App Engine's Datastore
+- Added code to query comments from the datastore and render as JSON
+
+Code was written last night in 10 minutes.
