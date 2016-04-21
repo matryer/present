@@ -1,0 +1,208 @@
+TDD in Go
+London Go Meetup
+30 Sep 2015
+
+Mat Ryer
+https://github.com/matryer/tdd-in-go
+@matryer
+
+* Purpose of this talk
+
+Try TDD if you haven't, apply it more if you have.
+
+.image passing.png
+
+* What is test driven development?
+
+- Write tests *before* implementation code
+- Automated
+- Run quickly and often
+- Unit tests, integration tests, any kind of tests
+
+* Why test-driven development?
+
+- Evidence based programming
+- Prove bugs or missing features
+- Demonstrate the intent
+- Protected from regression
+- Write tests for each other
+- Code becomes documentation
+- Get it out of your brain
+- Be your own user first
+
+* Simple process
+
+- Write a unit test
+- Run all tests to ensure your new one fails (RED)
+- Write the **smallest* amount of code needed to make your test pass
+- Run your tests and see it pass (GREEN)
+- Run all your tests to make sure you haven't broken anything
+- Commit?
+
+* Test code gives you a TODO list
+
+.play -edit test1.go /START OMIT/,/END OMIT/
+
+* Testing HTTP endpoints
+
+.code table_test.go /START OMIT/,/END OMIT/
+
+- Table tests using real Go code
+- Nothing new to learn
+
+* Using httptest package
+
+.play table_test2.go /START OMIT/,/END OMIT/
+
+- Making real HTTP requests
+- Tests the full stack (including middleware)
+
+* Go tools
+
+- go test - runs tests and gives you output
+- go test ./... - run tests for multi-package projects
+- go test -cover
+
+.code coverage.sh
+
+With TDD practices, the coverage number is automatically very high.
+
+* Visualising coverage
+
+    go test -covermode=count -coverprofile=count.out
+    go tool cover -html=count.out
+
+.image count.png
+
+see [[http://blog.golang.org/cover]]
+
+* Helper libraries?
+
+- Ginkgo
+- GoConvey
+- GoCheck
+- Testify
+- etc
+
+.code spec.go
+
+- Extra stuff to learn
+- If not just add assert(testing.T, bool), ok(testing.T, thing), etc.
+
+* Testify - Thou shalt write tests
+
+- Familiar assertions pattern
+
+.code testify.go
+
+- see [[https://github.com/stretchr/testify]]
+
+* Mocking
+
+- Use mocked objects in place of real objects when writing test code
+- Removes dependency on external systems
+- Make progress without having an actual implementation
+
+In Testify:
+
+.code mock.go /START OMIT/,/END OMIT/
+
+* Interfaces in your code
+
+In another package:
+
+    type Sender struct{}
+    func (s *Sender) Send(to, subject, body string) error {
+      // ...
+    }
+
+You can't change that package, but you can make your own interface:
+
+   type MailSender interface {
+     Send(to, subject, body string) error
+   }
+
+And then use that, as well as your own test MailSender:
+
+    func NewService(mailSender MailSender) { ... }
+
+    // theirs works
+    s := NewService(&their.Sender{})
+
+    // but now, so does yours
+    s := NewService(&mySender{})
+
+* Dedicated package for tests
+
+- Normally many packages in one directory is an error
+- It's OK for *_test.go files
+
+    package manners
+    func Greet(name string) string {
+      return prependGreeting("Hello", name, false)
+    }
+    func prependGreeting(g, s string, titlecase bool) string {
+      return g + " " + s
+    }
+
+Test it from an external point of view:
+
+    package manners_test
+    import (
+      "testing"
+      "manners"
+    )
+    func TestGreet(t *testing.T) {
+      assert.Equal(manners.Greet("John"), "Hello John")
+    }
+
+* Isolated code
+
+- When one thing breaks, one test should fail
+- Not always possible
+
+.play isolated_example.go /START OMIT/,/END OMIT/
+
+* Building and testing is usually very quick
+
+- On save: build and run all package tests
+
+.image failedtest.png
+
+* Art vs science of testing
+
+- Life-time of code, number of contributors, geography of team, open-source?
+
+Normal error code:
+
+    if err := json.NewEncoder(w).Encode(thing); err != nil {
+      return nil, err
+    }
+
+Unless the errors are part of your API:
+
+    if err := json.NewEncoder(w).Encode(thing); err != nil {
+      return nil, ErrEncoding(err, "tokens")
+    }
+
+- Sometimes you have to add complexity in order to test something - proceed with caution 
+
+* Ideas
+
+- Be similar to Go standard library
+- Prove a bug by submitting a failing test with your bug report
+- Describe new functionality in test code
+- Give a failing test to your pair partner
+- Tests as simple as possible
+- Different test package
+- Interfaces in test code
+- Build in ability to test live platforms too - and do it automatically
+
+* Thank you - Get in touch
+
+- Mat Ryer
+- @matryer
+- [[https://github.com/matryer]]
+- [[https://medium.com/@matryer]]
+
+.image gopher-mat.png
