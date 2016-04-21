@@ -1,0 +1,371 @@
+Building APIs (in Go)
+ProgSCon London
+22 Apr 2016
+Tags: APIs, Golang, Appengine
+
+Mat Ryer
+https://matryer.com/
+@matryer
+
+* About me
+
+- Using Go for six years (since before BETA)
+- Author of Go Programming Blueprints
+- Working at [[http://GrayMeta.com]]
+- Wrote [[https://downlist.io]], [[https://route.run]], [[https://disclaimr.org]] - in Go running on App Engine
+- Made BitBar app for Mac OS X - [[https://getbitbar.com]] another Go/AppEngine project
+- Blog about Go on [[http://matryer.com]]
+
+.image gopher-mat.png
+
+* Purpose of this talk
+
+- Learn Go in 5 minutes
+- Building APIs in Go
+- Real code running on Google App Engine
+
+Goal is to convince you to build your next API in Go.
+
+* Go in 5 minutes
+
+* Why Go?
+
+- Simplicity
+- Very little 'magic'
+- Standard format for code
+- Concurrency built in
+- Testing a first class concern
+- Amazing community
+- Compiles like lightning to single binary
+- Impressive standard library
+
+.image trend.png 200 _
+
+* Project structure
+
+- A single folder is a program or package
+- Files end with `.go`
+- Test files end with `_test.go`
+- All files start with `package` definition (usually folder name)
+- Programs must be `main` package and have `main` function entry point
+- Packages use any name (not `main`)
+- Case decides visibility (`private` vs `Public`)
+- You can `import` other packages
+- Easy tooling:
+  go build
+  go test
+  go vet
+  etc.
+
+* Language basics
+
+Variables and constants
+
+  var name string = "Go"
+  const PI int = 3.141592
+  age := 6
+  var finished bool
+
+Functions
+
+  func Load(filename string, retries int) ([]byte, error) { }
+
+Structs
+
+  type Person struct {
+  	Name string
+  	Age  int
+  }
+  me := Person{
+    Name: "Mat",
+    Age:  29
+  }
+
+* Language basics
+
+Methods
+
+  func (p Person) Load(filename string, retries int) ([]byte, error) { }
+
+Slices
+
+  var mylist []string
+  mylist = make([]string, 10)
+
+For loop
+
+  for i, item := range mylist {
+  }
+
+Error handling
+
+  bytes, err := Load("/path/to/file")
+  if err != nil {
+  	log.Fatalln("load:", err)
+  }
+
+* Langauge basics
+
+Maps
+
+  var ages map[string]int
+
+  ages = make(map[string]int)
+
+  ages := map[string]int{
+  	"Mat":   28,
+  	"David": 35,
+  	"John":  76,
+  }
+
+* Language basics
+
+Calling functions
+
+  func main() {
+    data, err := GetData()
+    if err != nil {
+    	log.Fatalln(err)
+    }
+    err = ParseData(data)
+  }
+
+Defer: run code just before the function exits
+
+  func DoSomething() error {
+    f, err := os.Open("/path/to/file")
+    defer f.Close()
+    if err != nil {
+    	return err
+    }
+
+    // do work with f
+
+    return nil
+  }
+
+* Language basics
+
+Interfaces
+
+  type Persister interface {
+    Load(filename string) error
+    Save(filename string) error
+  }
+
+- Type of duck typing called structural typing
+
+Implementing an interface:
+
+  type Person struct {
+    Name string
+    Age  int
+  }
+  func (p *Person) Load(filename string) error { ... }
+  func (p *Person) Save(filename string) error { ... }
+
+Everything is:
+
+  interface{}
+
+* Building APIs in Go
+
+* `http` package from the standard library
+
+Meet the `http.Handler` interface:
+
+  type Handler interface {
+    ServeHTTP(w http.ResponseWriter, r *http.Request)
+  }
+  
+  http.Handle("/path", myHandler)
+
+`http.HandlerFunc` is even easier:
+
+  http.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
+
+  })
+
+* Production ready example
+
+.code production_ready.go
+
+* http.ResponseWriter
+
+  // A ResponseWriter interface is used by an HTTP handler to
+  // construct an HTTP response.
+  type ResponseWriter interface {
+
+    Header() Header
+    Write([]byte) (int, error)
+    WriteHeader(int)
+
+  }
+
+from [[http://golang.org/src/net/http/server.go?s=1517:2599#L48]]
+
+* http.Request
+
+`http.Request` contains everything you need to know about the request. 
+
+- `r.Method` - HTTP method (`GET`, `POST`, `PUT`, `PATCH`, `DELETE` etc.)
+- `r.URL.Path` - Request path (`/things/123`)
+- `r.URL.String()` - Full URL
+- `r.URL.Query()` - Query parameters (`q=something&p=2`)
+- `r.Body` - `io.ReadCloser` of the request body
+
+More at [[https://golang.org/pkg/net/http/#Request]]
+
+* Building a simple comments API
+
+* MVP
+
+- API to accept comments via `POST` `/comments`
+- Deliver comments via `GET` `/comments`
+- Deploy to Google App Engine
+
+* Setup project
+
+  /comments
+    app.yaml
+    main.go
+
+`app.yaml`
+
+  application: commentsapp
+  version:     1
+  runtime:     go
+  api_version: go1
+  handlers:
+  - url: /.*
+    script: _go_app
+
+`main.go`
+
+  package comments
+  import "net/http"
+  func init() {
+  	http.HandleFunc("/comments", handleComments)
+  }
+
+* comments.go
+
+Create a `struct` to hold each comment
+
+  package comments
+
+  type Comment struct {
+  	Key     *datastore.Key `json:"id" datastore:"-"`
+  	Body    string         `json:"body"`
+  	Author  string         `json:"author"`
+  	Created time.Time      `json:"created"`
+  }
+
+* Handler
+
+`http.HandlerFunc` that routes based on HTTP method
+
+  func handleComments(w http.ResponseWriter, r *http.Request) {
+  	ctx := appengine.NewContext(r)
+  	switch r.Method {
+  	case "GET":
+  		handleGetComments(ctx, w, r)
+  	case "POST":
+  		handleAddComment(ctx, w, r)
+  	}
+  }
+
+* Handle reading comments
+
+  func handleGetComments(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+  	comments := make([]Comment, 0)
+
+  	keys, err := datastore.NewQuery("Comment").Order("-Created").GetAll(ctx, &comments)
+  	if err != nil {
+  		http.Error(w, err.Error(), http.StatusInternalServerError)
+  		return
+  	}
+
+  	for i, key := range keys {
+  		comments[i].Key = key
+  	}
+
+  	err = json.NewEncoder(w).Encode(comments)
+  	if err != nil {
+  		http.Error(w, err.Error(), http.StatusInternalServerError)
+  		return
+  	}
+  }
+
+* Handle adding comments
+
+  func handleAddComment(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+  	var comment Comment
+  	err := json.NewDecoder(r.Body).Decode(&comment)
+  	if err != nil {
+  		http.Error(w, err.Error(), http.StatusBadRequest)
+  		return
+  	}
+  	comment.Created = time.Now()
+  	commentKey := datastore.NewIncompleteKey(ctx, "Comment", nil)
+  	commentKey, err = datastore.Put(ctx, commentKey, &comment)
+  	if err != nil {
+  		http.Error(w, err.Error(), http.StatusInternalServerError)
+  		return
+  	}
+  	comment.Key = commentKey
+  	w.WriteHeader(http.StatusCreated)
+  	err = json.NewEncoder(w).Encode(comment)
+  	if err != nil {
+  		http.Error(w, err.Error(), http.StatusInternalServerError)
+  		return
+  	}
+  }
+
+* That's it
+
+* Local testing and deployment
+
+Google App Engine SDK provides `goapp` command.
+
+Run local dev server:
+
+  goapp serve
+
+Deploy to Google App Engine:
+
+  goapp deploy
+
+* Using the API
+
+Adding comments with `curl`:
+
+  $ curl -XPOST -d '{"body":"Hi Progscon","author":"Mat"}' http://localhost:8080/comments
+
+  {
+  	"id":"ag9kZXZ-Y29tbWVudHNhcHByFAsSB0NvbW1lbnQYgICAgICAgAoM",
+  	"body":"Hi Progscon",
+  	"author":"Mat",
+  	"created":"2016-04-21T17:32:50.203193915Z"
+  }
+
+* Viewing comments data in a browser
+
+`GET` [[http://localhost:8080/comments]]
+
+  [{
+  	"id": "ag9kZXZ-Y29tbWVudHNhcHByFAsSB0NvbW1lbnQYgICAgICAgAsM",
+  	"body": "I didnt even get chance to explain channels etc.",
+  	"author": "Mat",
+  	"created": "2016-04-21T17:51:20.438461Z"
+  }, {
+  	"id": "ag9kZXZ-Y29tbWVudHNhcHByFAsSB0NvbW1lbnQYgICAgICAgAkM",
+  	"body": "I hope people build APIs with Go",
+  	"author": "Mat",
+  	"created": "2016-04-21T17:50:58.884083Z"
+  }, {
+  	"id": "ag9kZXZ-Y29tbWVudHNhcHByFAsSB0NvbW1lbnQYgICAgICAgAoM",
+  	"body": "Hi Progscon",
+  	"author": "Mat",
+  	"created": "2016-04-21T17:32:50.203193Z"
+  }]
