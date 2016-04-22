@@ -43,7 +43,11 @@ Goal is to convince you to build your next API in Go.
 
 * Go code
 
-.code greeter/greeter.go
+.code greeter/greeter.go /START OMIT/,/END OMIT/
+
+* Using Greeter
+
+.play greeter-demo/greeter.go /START OMIT/,/END OMIT/
 
 * Building APIs in Go
 
