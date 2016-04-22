@@ -330,7 +330,7 @@ Go has one of the most inclusive and patient communities in tech.
 
 - Go's simplicity makes writing APIs easy
 - Write functions that accept `http.ResponseWriter` and `http.Request`
-- Google App Engine is an ops-less way of deploying code
+- Google App Engine is an NoOps way of deploying code
 - If our app takes off, Google can scale it for us
 
 What we did:
