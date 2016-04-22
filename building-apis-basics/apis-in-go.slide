@@ -112,13 +112,13 @@ More at [[https://golang.org/pkg/net/http/#Request]]
     })
   }
 
-* Adapters
+* Middleware in code
 
-  // Adapter wraps an http.Handler with additional
+  // Middleware wraps an http.Handler with additional
   // functionality.
-  type Adapter func(http.Handler) http.Handler
+  type Middleware func(http.Handler) http.Handler
   
-  func Logging(l *log.Logger) Adapter {
+  func Logging(l *log.Logger) Middleware {
     return func(h http.Handler) http.Handler {
       return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         // before the handlers
