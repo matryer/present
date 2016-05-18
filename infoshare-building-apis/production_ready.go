@@ -12,7 +12,7 @@ type Msg struct {
 
 func main() {
 	http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
-		err := json.NewEncoder(w).Encode(Msg{Message: "Hello ProgSCon"})
+		err := json.NewEncoder(w).Encode(Msg{Message: "Hello infoShare"})
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
