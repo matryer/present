@@ -1,0 +1,162 @@
+Building APIs in Go
+infoShare, Poland
+19 May 2016
+Tags: APIs, Golang, Appengine
+
+Mat Ryer
+https://matryer.com/
+@matryer
+
+* About me
+
+- Using Go for six years (since before BETA)
+- Author of Go Programming Blueprints
+- Working at [[http://GrayMeta.com]]
+- Wrote [[https://downlist.io]], [[https://route.run]], [[https://disclaimr.org]] - in Go running on App Engine
+- Made BitBar app for Mac OS X - [[https://getbitbar.com]] another Go/AppEngine project
+- Blog about Go on [[http://matryer.com]]
+
+.image gopher-mat.png
+
+* Purpose of this talk
+
+- Learn Go in 5 minutes
+- Find out why Go is great for Building APIs
+
+Goal is to convince you to build your next API in Go.
+
+* Why Go?
+
+- Simplicity
+- Very little 'magic'
+- Standard format for code
+- Concurrency built in
+- Testing a first class concern
+- Amazing community
+- Compiles like lightning to single binary that runs anywhere
+- Impressive standard library (we already have HTTP/2)
+
+.image trend.png 200 _
+
+* Go philosophy
+
+- Write code that any Gopher can read and contribute to
+- Simple over clever code
+- Fewer dependencies
+- Don't do too much with the language
+- Consider maintenance of code in the cost
+
+Some people find Go limiting when they first look at it because we're so used to "more is better."
+
+After time, you realise the power in its simplicity and the design decisions taken by the authors.
+
+* Go code
+
+.code greeter/greeter.go /START OMIT/,/END OMIT/
+
+* Using Greeter
+
+.play greeter-demo/greeter.go /START OMIT/,/END OMIT/
+
+* Building APIs in Go
+
+* `http` package from the standard library
+
+Meet the `http.Handler` interface:
+
+  type Handler interface {
+    ServeHTTP(w http.ResponseWriter, r *http.Request)
+  }
+
+  http.Handle("/path", myHandler)
+
+`http.HandlerFunc` is even easier:
+
+  http.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
+
+  })
+
+* Production ready example
+
+.code production_ready.go
+
+* http.ResponseWriter
+
+  // A ResponseWriter interface is used by an HTTP handler to
+  // construct an HTTP response.
+  type ResponseWriter interface {
+
+    Header() Header
+    Write([]byte) (int, error)
+    WriteHeader(int)
+
+  }
+
+from [[http://golang.org/src/net/http/server.go?s=1517:2599#L48]]
+
+* http.Request
+
+`http.Request` contains everything you need to know about the request.
+
+- `r.Method` - HTTP method (`GET`, `POST`, `PUT`, `PATCH`, `DELETE` etc.)
+- `r.URL.Path` - Request path (`/things/123`)
+- `r.URL.String()` - Full URL
+- `r.URL.Query()` - Query parameters (`q=something&p=2`)
+- `r.Body` - `io.ReadCloser` of the request body
+
+More at [[https://golang.org/pkg/net/http/#Request]]
+
+* Middleware
+
+  func Log(h http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+      // before the handlers
+
+      // call handler
+      h.ServeHTTP(w, r)
+
+      // after the handlers
+
+    })
+  }
+
+* Middleware in code
+
+  // Middleware wraps an http.Handler with additional
+  // functionality.
+  type Middleware func(http.Handler) http.Handler
+
+  func Logging(l *log.Logger) Middleware {
+    return func(h http.Handler) http.Handler {
+      return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        // before the handlers
+        h.ServeHTTP(w, r)
+        // after the handlers
+      })
+    }
+  }
+
+To use it:
+
+  withLogs := Logging(l)
+  http.Handle("/one", withLogs(handleOne))
+  http.Handle("/two", withLogs(handleTwo))
+  http.Handle("/three", withLogs(handleThree))
+
+* infoShare workshop report
+
+- This morning we built a complete API, and hosted it on Google App Engine
+- 3.5 hours workshop
+- Zero code was written before the workshop
+
+See what we built: [[https://github.com/matryer/rapid-api]]
+
+* Community
+
+Go has one of the most inclusive and patient communities in tech.
+
+- Slack: [[https://gophers.slack.com]]
+- golang-nuts Google Groups
+- Meetups everywhere: [[http://go-meetups.appspot.com]]
+- @womenwhogo - [[https://womenwhogo.org]]
