@@ -58,6 +58,30 @@ After time, you realise the power in its simplicity and the design decisions tak
 
 .play greeter-demo/greeter.go /START OMIT/,/END OMIT/
 
+* Go is too cool for 30 minutes
+
+Goroutines let you easily write multi-threaded code:
+
+  for i := 0; i < 10000; i++ {
+    go doSomething(i)
+  }
+  // carry on...
+
+Channels let your goroutines communicate:
+
+  itemChan := make(chan Item)
+
+  for {
+    select {
+    case item := <-itemChan:
+      doSomething(item)
+    case err := <-errChan:
+      handleError(err)
+    case <-time.After(1 * time.Minute):
+      log.Println("nothing happened for 1 minute")
+    }
+  }
+  
 * Building APIs in Go
 
 * `http` package from the standard library
@@ -162,30 +186,6 @@ To use it:
   http.Handle("/one", withLogs(handleOne))
   http.Handle("/two", withLogs(handleTwo))
   http.Handle("/three", withLogs(handleThree))
-
-* Go is too cool for 30 minutes
-
-Goroutines let you easily write multi-threaded code:
-
-  for i := 0; i < 10000; i++ {
-    go doSomething(i)
-  }
-  // carry on...
-
-Channels let your goroutines communicate:
-
-  itemChan := make(chan Item)
-
-  for {
-    select {
-    case item := <-itemChan:
-      doSomething(item)
-    case err := <-errChan:
-      handleError(err)
-    case <-time.After(1 * time.Minute):
-      log.Println("nothing happened for 1 minute")
-    }
-  }
 
 * infoShare workshop report
 
