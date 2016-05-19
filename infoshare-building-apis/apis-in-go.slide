@@ -32,7 +32,7 @@ Goal is to convince you to build your next API in Go.
 - Standard format for code
 - Concurrency built in
 - Testing a first class concern
-- Amazing community
+- Amazing community (and Go is opensource)
 - Compiles like lightning to single binary that runs anywhere
 - Impressive standard library (we already have HTTP/2)
 
@@ -76,6 +76,21 @@ Meet the `http.Handler` interface:
 
   })
 
+* How http.HandlerFunc works
+
+- HandlerFunc is a function type
+- The HandlerFunc type itself implements http.Handler
+- Therefore, HandlerFunc can be used wherever http.Handler is needed
+
+  type HandlerFunc func(ResponseWriter, *Request)
+
+  // ServeHTTP calls f(w, r).
+  func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
+    f(w, r)
+  }
+
+See [[https://golang.org/pkg/net/http/#HandlerFunc]]
+
 * Production ready example
 
 .code production_ready.go
@@ -108,7 +123,10 @@ More at [[https://golang.org/pkg/net/http/#Request]]
 
 * Middleware
 
+Do stuff before and after calling the handler.
+
   func Log(h http.Handler) http.Handler {
+
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
       // before the handlers
@@ -119,6 +137,7 @@ More at [[https://golang.org/pkg/net/http/#Request]]
       // after the handlers
 
     })
+
   }
 
 * Middleware in code
@@ -144,13 +163,37 @@ To use it:
   http.Handle("/two", withLogs(handleTwo))
   http.Handle("/three", withLogs(handleThree))
 
+* Go is too cool for 30 minutes
+
+Goroutines let you easily write multi-threaded code:
+
+  for i := 0; i < 10000; i++ {
+    go doSomething(i)
+  }
+  // carry on...
+
+Channels let your goroutines communicate:
+
+  itemChan := make(chan Item)
+
+  for {
+    select {
+    case item := <-itemChan:
+      doSomething(item)
+    case err := <-errChan:
+      handleError(err)
+    case <-time.After(1 * time.Minute):
+      log.Println("nothing happened for 1 minute")
+    }
+  }
+
 * infoShare workshop report
 
 - This morning we built a complete API, and hosted it on Google App Engine
 - 3.5 hours workshop
 - Zero code was written before the workshop
 
-See what we built: [[https://github.com/matryer/rapid-api]]
+See what we built: [[https://github.com/matryer/infoshare]]
 
 * Community
 
