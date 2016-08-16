@@ -96,10 +96,10 @@ http.Handler has a counterpart called http.HandlerFunc
     1726		f(w, r)
     1727	}
 
-- func type with matching signature
-- Method on that func implementing the interface
-- Method just calls the func
-- Now you don't even need a struct, you can just use a function
+- `func` type with matching signature
+- Method on that `func` implementing the interface
+- Method just calls the `func`
+- Now you don't even need a `struct`, you can just use a function
 - You can use this pattern
 
 * Log blocks
@@ -162,7 +162,7 @@ Hard to see which bit you're working on
 
 - Clean-up code is encapsulated
 - Caller doesn't need to worry about cleaning up
-- If Setup changes, code that uses it doesn't necessarily need to
+- If `Setup` changes, code that uses it doesn't necessarily need to
 
 * Good timing
 
@@ -180,7 +180,7 @@ Hard to see which bit you're working on
 
 * Many items as one
 
-Add a new type which is a slice of interface
+Add a new type which is a slice of the interface
 
 .code many-items.go /TWO OMIT/,/TWO END OMIT/
 
@@ -189,7 +189,7 @@ Add a new type which is a slice of interface
 .code many-items.go /THREE OMIT/,/THREE END OMIT/
 
 - `SizeFunc` means we can write ad-hoc size calculators and still make use of the same methods
-- Size int64 type means we can specify explicit sizes: `Size(123)`
+- `Size int64` type means we can specify explicit sizes: `Size(123)`
 - Easy because the interface is so small
 
 * Optional features
@@ -205,6 +205,28 @@ Implement the interface but pass execution directly to the function fields
 * Using simple mocks
 
 .code mocks.go /TWO OMIT/,/TWO END OMIT/
+
+* Mocking other people's structs
+
+Sometimes somebody else provides the `struct` (and not an `interface`)
+
+    package them
+
+    type Messenger struct {}
+    func (m *Messenger) Send(to, message string) error {
+        // ... their code
+    }
+
+We want to mock this in test code but there's no `interface`
+
+Make your own
+
+    type Messenger interface {
+        Send(to, message string) error
+    }
+
+- This interface is already implemented by `them.Messenger` struct
+- We are free to mock it in test code or even provide our own implementations
 
 * Retrying
 
@@ -242,7 +264,7 @@ Full code at [[https://github.com/matryer/try]]
       log.Fatalln("error:", err)
     }
 
-- Don't bloat the Do func with arguments
+- Don't bloat the `Do` function with arguments
 - Let people do extra things with Go code where possible
 
 * Empty struct implementations
@@ -262,9 +284,9 @@ Full code at [[https://github.com/matryer/try]]
 
     var JSON Codec = jsonCodec{}
 
-- Empty struct{} to group methods together
+- Empty `struct{}` to group methods together
 - Methods don't capture the receiver
-- JSON variable doesn't expose the jsonCodec type
+- JSON variable doesn't expose the `jsonCodec` type
 - Very simple API
 
 * Semaphores
