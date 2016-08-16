@@ -1,0 +1,331 @@
+Idiomatic Go Tricks
+Go UK Confernece - London, UK
+18 Aug 2016
+Tags: Idiomatic, Golang, Tips
+
+Mat Ryer
+matryer.com
+@matryer
+
+* About me
+
+- Using Go for six years (since before BETA)
+- Author of Go Programming Blueprints
+- Working at [[http://GrayMeta.com]] (100% Go backend)
+- Wrote [[https://downlist.io]], [[https://route.run]], [[https://disclaimr.org]] - in Go running on App Engine
+- Made BitBar app for Mac OS X - [[https://getbitbar.com]] another Go/AppEngine project
+- Blog about Go on [[http://matryer.com]]
+
+.image gopher-mat.png
+
+* Idiomatic
+
+adjective: using, containing, or denoting expressions
+that are natural to a native speaker
+
+It’s possible to be a native speaker in Go
+
+* Go code
+
+.code nicecode.go /START OMIT/,/END OMIT/
+
+This is what most Go code ends up looking like.
+
+* Line of sight
+
+- definition: "a straight line along which an observer has unobstructed vision"
+- Happy path is aligned to the left
+- Quickly scan a function to see expected flow
+- Error handling and edge cases indented
+
+.image lines.png
+
+* Bad line of sight
+
+.code badcode.go /START OMIT/,/END OMIT/
+
+* Line of sight tips
+
+- Make happy return that last statement if possible
+- Next time you write else, consider flipping the logic:
+
+    if something.OK() {
+    	// do stuff
+    	return true, nil
+    } else {
+    	return false, errors.New("something")
+    }
+
+becomes:
+
+    if !something.OK() {
+    	return false, errors.New("something")
+    }
+    // do stuff
+    return true, nil
+
+* Single method interfaces
+
+    type Reader interface {
+        Read(p []byte) (n int, err error)
+    }
+
+- Interface consisting of only one method
+- Simpler = more powerful and useful
+- Easy to implement
+- Used throughout the standard library
+
+    type Handler interface {
+        ServeHTTP(ResponseWriter, *Request)
+    }
+
+- Only need to implement one method on a struct to build a handler
+
+* Function type alternatives for single method interfaces
+
+http.Handler has a counterpart called http.HandlerFunc
+
+    1718	// The HandlerFunc type is an adapter to allow the use of
+    1719	// ordinary functions as HTTP handlers. If f is a function
+    1720	// with the appropriate signature, HandlerFunc(f) is a
+    1721	// Handler that calls f.
+    1722	type HandlerFunc func(ResponseWriter, *Request)
+    1723	
+    1724	// ServeHTTP calls f(w, r).
+    1725	func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
+    1726		f(w, r)
+    1727	}
+
+- func type with matching signature
+- Method on that func implementing the interface
+- Method just calls the func
+- Now you don't even need a struct, you can just use a function
+- You can use this pattern
+
+* Log blocks
+
+    2016/08/16 17:21:33 opening database connection...
+    2016/08/16 17:21:33 read item 92herg9huwh37uhu8i3n98uejrfiosefkP
+    2016/08/16 17:21:33 closing database connection...
+    2016/08/16 17:21:33 opening database connection...
+    2016/08/16 17:21:33 read item 92herg9huwh37uhu8i3n98uejrfiosefkk
+    2016/08/16 17:21:33 closing database connection...
+    2016/08/16 17:21:33 opening database connection...
+    2016/08/16 17:21:33 read item 92herg9huwh37uhu8i3n98uejrfiosefkl
+    2016/08/16 17:21:33 closing database connection...
+    2016/08/16 17:21:33 opening database connection...
+    2016/08/16 17:21:33 read item 92herg9huwh37uhu8i3n98uejrfiosefkj
+    2016/08/16 17:21:33 closing database connection...
+    2016/08/16 17:21:33 opening database connection...
+    2016/08/16 17:21:33 error for 92herg9huwh37uhu8i3n98uejrfiosefkj
+    2016/08/16 17:21:33 closing database connection...
+    2016/08/16 17:21:33 opening database connection...
+    2016/08/16 17:21:33 read item 92herg9huwh37uhu8i3n98uejrfiosefkj
+    2016/08/16 17:21:33 closing database connection...
+
+Hard to see which bit you're working on
+
+* Log blocks
+
+    func foo() error {
+    	log.Println("----------")
+    	defer log.Println("----------")
+
+    	//...
+    }
+
+- Sits at the top of the function
+- Easy to comment out or remove
+
+    2016/08/16 17:21:33 opening database connection...
+    2016/08/16 17:21:33 read item 92herg9huwh37uhu8i3n98uejrfiosefkj
+    2016/08/16 17:21:33 closing database connection...
+    2016/08/16 17:21:33 ----------
+    2016/08/16 17:21:33 opening database connection...
+    2016/08/16 17:21:33 error for 92herg9huwh37uhu8i3n98uejrfiosefkj
+    2016/08/16 17:21:33 closing database connection...
+    2016/08/16 17:21:33 ----------
+    2016/08/16 17:21:33 opening database connection...
+    2016/08/16 17:21:33 read item 92herg9huwh37uhu8i3n98uejrfiosefkj
+    2016/08/16 17:21:33 closing database connection...
+    2016/08/16 17:21:33 opening database connection...
+    2016/08/16 17:21:33 read item 92herg9huwh37uhu8i3n98uejrfiosefkj
+    2016/08/16 17:21:33 closing database connection...
+
+* Return teardown functions
+
+.code teardown.go /START OMIT/,/END OMIT/
+
+* Return teardown functions
+
+.code teardown.go /TWO OMIT/,/TWO END OMIT/
+
+- Clean-up code is encapsulated
+- Caller doesn't need to worry about cleaning up
+- If Setup changes, code that uses it doesn't necessarily need to
+
+* Good timing
+
+.code timing.go /START OMIT/,/END OMIT/
+
+    10:00:01 FunkyFunc started
+    10:00:01 FunkyFunc took 1.0014159265s
+
+- Capture the state in the closure
+- Make things easy for your users
+
+* Discover interfaces
+
+.code many-items.go /START OMIT/,/END OMIT/
+
+* Many items as one
+
+Add a new type which is a slice of interface
+
+.code many-items.go /TWO OMIT/,/TWO END OMIT/
+
+* Other ways to implement the interface
+
+.code many-items.go /THREE OMIT/,/THREE END OMIT/
+
+- `SizeFunc` means we can write ad-hoc size calculators and still make use of the same methods
+- Size int64 type means we can specify explicit sizes: `Size(123)`
+- Easy because the interface is so small
+
+* Optional features
+
+.code optionals.go /START OMIT/,/END OMIT/
+
+* Simple mocks
+
+.code mocks.go /START OMIT/,/END OMIT/
+
+Implement the interface but pass execution directly to the function fields
+
+* Using simple mocks
+
+.code mocks.go /TWO OMIT/,/TWO END OMIT/
+
+* Retrying
+
+.code try.go /START OMIT/,/END OMIT/
+
+Full code at [[https://github.com/matryer/try]]
+
+* Retrying: five times
+
+    var value string
+    err := try.Do(func(attempt int) (bool, error) {
+      var err error
+      value, err = SomeFunction()
+      return attempt < 5, err // try 5 times
+    })
+    if err != nil {
+      log.Fatalln("error:", err)
+    }    
+
+- Return whether to retry or not, or an error
+- Easy to read
+
+* Retrying: Delay between retries
+
+    var value string
+    err := try.Do(func(attempt int) (bool, error) {
+      var err error
+      value, err = SomeFunction()
+      if err != nil {
+        time.Sleep(1 * time.Minute) // wait a minute
+      }
+      return attempt < 5, err
+    })
+    if err != nil {
+      log.Fatalln("error:", err)
+    }
+
+- Don't bloat the Do func with arguments
+- Let people do extra things with Go code where possible
+
+* Empty struct implementations
+
+    type Codec interface {
+      Encode(w io.Writer, v interface{}) error
+      Decode(r io.Reader, v interface{}) error
+    }    
+
+    type jsonCodec struct{}
+    func (jsonCodec) Encode(w io.Writer, v interface{}) error {
+      return json.NewEncoder(w).Encode(v)
+    }
+    func (jsonCodec) Decode(r io.Reader, v interface{}) error {
+      return json.NewDecoder(r).Decode(v)
+    }    
+
+    var JSON Codec = jsonCodec{}
+
+- Empty struct{} to group methods together
+- Methods don't capture the receiver
+- JSON variable doesn't expose the jsonCodec type
+- Very simple API
+
+* Semaphores
+
+.play semaphores.go /START OMIT/,/END OMIT/
+
+* Debug logs with a build tag
+
+    package app_test
+
+    var verbose = false
+    
+    func debug(args ...interface{}) {
+      if !verbose { return }
+      log.Println(args…)
+    }
+    
+    func Test(t *testing.T) {
+       debug(“start”)
+       defer debug(“end”)
+    }
+
+Different file:
+
+    // +build debug
+
+    package app_test
+    
+    func init() {
+        verbose = true
+    }    
+
+
+* Be obvious not clever
+
+    func something() {
+        defer StartTimer("something")()
+        
+        // :-|
+    }
+
+should be
+
+    func something() {
+        stop := StartTimer("something")
+        defer stop()
+
+        // :-)
+    }
+
+* How to become a native speaker
+
+- Read the standard library
+- Write obvious code (not clever)
+- Don't surprise your users
+- Seek simplicity
+
+Learn from others:
+
+- Participate in open-source projects
+- Ask for reviews and accept criticisms
+- Help others when you spot something (and be kind)
+
+Tweet me [[@matryer]] if you have any questions or comments

@@ -5,7 +5,6 @@ import (
 
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
-	"gopkg.in/mgo.v2"
 )
 
 // START OMIT

@@ -7,7 +7,6 @@ import (
 
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
-	"gopkg.in/mgo.v2"
 )
 
 func WithDB(s *mgo.Session, h http.Handler) http.Handler {
