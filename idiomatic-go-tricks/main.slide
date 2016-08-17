@@ -47,7 +47,7 @@ This is what most Go code ends up looking like.
 * Line of sight tips
 
 - Make happy return that last statement if possible
-- Next time you write else, consider flipping the logic:
+- Next time you write `else`, consider flipping the logic:
 
     if something.OK() {
     	// do stuff
@@ -63,6 +63,8 @@ becomes:
     }
     // do stuff
     return true, nil
+
+See also "cyclomatic complexity" - the pursuit of simplicity
 
 * Single method interfaces
 
@@ -128,7 +130,7 @@ Hard to see which bit you're working on
 * Log blocks
 
     func foo() error {
-    	log.Println("----------")
+    	log.Println("----------") 
     	defer log.Println("----------")
 
     	//...
@@ -162,7 +164,7 @@ Hard to see which bit you're working on
 
 - Clean-up code is encapsulated
 - Caller doesn't need to worry about cleaning up
-- If `Setup` changes, code that uses it doesn't necessarily need to
+- If `setup` changes, code that uses it doesn't necessarily need to
 
 * Good timing
 
@@ -184,12 +186,15 @@ Add a new type which is a slice of the interface
 
 .code many-items.go /TWO OMIT/,/TWO END OMIT/
 
+- The slice type implenents the `Sizer` interface
+- Now a set of objects can be used in `Fits` and `IsEmailable` functions
+
 * Other ways to implement the interface
 
 .code many-items.go /THREE OMIT/,/THREE END OMIT/
 
 - `SizeFunc` means we can write ad-hoc size calculators and still make use of the same methods
-- `Size int64` type means we can specify explicit sizes: `Size(123)`
+- `Size` `int64` type means we can specify explicit sizes: `Size(123)`
 - Easy because the interface is so small
 
 * Optional features
@@ -237,13 +242,13 @@ Full code at [[https://github.com/matryer/try]]
 * Retrying: five times
 
     var value string
-    err := try.Do(func(attempt int) (bool, error) {
-      var err error
-      value, err = SomeFunction()
-      return attempt < 5, err // try 5 times
+    err := Try(func(attempt int) (bool, error) {
+        var err error
+        value, err = SomeFunction()
+        return attempt < 5, err // try 5 times
     })
     if err != nil {
-      log.Fatalln("error:", err)
+        log.Fatalln("error:", err)
     }    
 
 - Return whether to retry or not, or an error
@@ -252,16 +257,16 @@ Full code at [[https://github.com/matryer/try]]
 * Retrying: Delay between retries
 
     var value string
-    err := try.Do(func(attempt int) (bool, error) {
-      var err error
-      value, err = SomeFunction()
-      if err != nil {
-        time.Sleep(1 * time.Minute) // wait a minute
-      }
-      return attempt < 5, err
+    err := Try(func(attempt int) (bool, error) {
+        var err error
+        value, err = SomeFunction()
+        if err != nil {
+            time.Sleep(1 * time.Minute) // wait a minute
+        }
+        return attempt < 5, err
     })
     if err != nil {
-      log.Fatalln("error:", err)
+        log.Fatalln("error:", err)
     }
 
 - Don't bloat the `Do` function with arguments
@@ -270,16 +275,16 @@ Full code at [[https://github.com/matryer/try]]
 * Empty struct implementations
 
     type Codec interface {
-      Encode(w io.Writer, v interface{}) error
-      Decode(r io.Reader, v interface{}) error
+        Encode(w io.Writer, v interface{}) error
+        Decode(r io.Reader, v interface{}) error
     }    
 
     type jsonCodec struct{}
     func (jsonCodec) Encode(w io.Writer, v interface{}) error {
-      return json.NewEncoder(w).Encode(v)
+        return json.NewEncoder(w).Encode(v)
     }
     func (jsonCodec) Decode(r io.Reader, v interface{}) error {
-      return json.NewDecoder(r).Decode(v)
+        return json.NewDecoder(r).Decode(v)
     }    
 
     var JSON Codec = jsonCodec{}
@@ -300,13 +305,13 @@ Full code at [[https://github.com/matryer/try]]
     var verbose = false
     
     func debug(args ...interface{}) {
-      if !verbose { return }
-      log.Println(args…)
+        if !verbose { return }
+        log.Println(args…)
     }
     
     func Test(t *testing.T) {
-       debug(“start”)
-       defer debug(“end”)
+        debug(“start”)
+        defer debug(“end”)
     }
 
 Different file:

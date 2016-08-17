@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io"
 	"io/ioutil"
 	"os"
 	"testing"
@@ -9,7 +8,7 @@ import (
 
 // START OMIT
 
-func Setup(t *testing.T) (io.Reader, func(), error) {
+func setup(t *testing.T) (*os.File, func(), error) {
 	teardown := func() {}
 	// make a test file
 	f, err := ioutil.TempFile(os.TempDir(), "test")
@@ -20,12 +19,12 @@ func Setup(t *testing.T) (io.Reader, func(), error) {
 		// close f
 		err := f.Close()
 		if err != nil {
-			t.Error("Setup: Close:", err)
+			t.Error("setup: Close:", err)
 		}
 		// delete the test file
 		err = os.RemoveAll(f.Name())
 		if err != nil {
-			t.Error("Setup: RemoveAll:", err)
+			t.Error("setup: RemoveAll:", err)
 		}
 	}
 	return f, teardown, nil
@@ -36,12 +35,12 @@ func Setup(t *testing.T) (io.Reader, func(), error) {
 // TWO OMIT
 
 func TestSomething(t *testing.T) {
-	r, teardown, err := Setup(t)
+	f, teardown, err := setup(t)
 	defer teardown()
 	if err != nil {
-		t.Error("Setup:", err)
+		t.Error("setup:", err)
 	}
-	// do something with r
+	// do something with f
 }
 
 // TWO END OMIT

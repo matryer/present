@@ -4,7 +4,7 @@ package main
 
 type Func func(attempt int) (retry bool, err error)
 
-func Do(fn Func) error {
+func Try(fn Func) error {
 	var err error
 	var cont bool
 	attempt := 1

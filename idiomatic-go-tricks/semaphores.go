@@ -2,34 +2,32 @@ package main
 
 import (
 	"log"
-	"runtime"
+	"time"
 )
 
 // START OMIT
 
 var (
-	concurrent    = runtime.NumCPU()
+	concurrent    = 5
 	semaphoreChan = make(chan struct{}, concurrent)
 )
 
 func doWork(item int) {
-	// push to channel will block if it's full
-	semaphoreChan <- struct{}{}
-	defer func() {
-		// read from semaphoreChan to release a slot
-		<-semaphoreChan
+	semaphoreChan <- struct{}{} // block while full
+	go func() {
+		defer func() {
+			<-semaphoreChan // read to release a slot
+		}()
+		log.Println(item)
+		time.Sleep(500 * time.Millisecond)
 	}()
-
-	// TODO: do work
-	log.Println(item)
 }
 
 func main() {
 	for i := 0; i < 10000; i++ {
-		go doWork(i)
+		doWork(i)
 	}
+	time.Sleep(5 * time.Second)
 }
 
 // END OMIT
-
-type Item struct{}
