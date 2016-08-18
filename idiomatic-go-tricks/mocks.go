@@ -22,7 +22,7 @@ func (m MockSender) Send(to, subject, body string) error {
 	return m.SendFunc(to, subject, body)
 }
 func (m MockSender) SendFrom(from, to, subject, body string) error {
-	return m.SendFunc(from, to, subject, body)
+	return m.SendFromFunc(from, to, subject, body)
 }
 
 // END OMIT

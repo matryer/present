@@ -19,7 +19,7 @@ func doWork(item int) {
 			<-semaphoreChan // read to release a slot
 		}()
 		log.Println(item)
-		time.Sleep(500 * time.Millisecond)
+		time.Sleep(1 * time.Second)
 	}()
 }
 
@@ -27,7 +27,6 @@ func main() {
 	for i := 0; i < 10000; i++ {
 		doWork(i)
 	}
-	time.Sleep(5 * time.Second)
 }
 
 // END OMIT

@@ -25,6 +25,8 @@ that are natural to a native speaker
 
 It’s possible to be a native speaker in Go
 
+This talk will cover some every day tips and tricks
+
 * Go code
 
 .code nicecode.go /START OMIT/,/END OMIT/
@@ -269,7 +271,7 @@ Full code at [[https://github.com/matryer/try]]
         log.Fatalln("error:", err)
     }
 
-- Don't bloat the `Do` function with arguments
+- Don't bloat the `Try` function with arguments
 - Let people do extra things with Go code where possible
 
 * Empty struct implementations
@@ -296,7 +298,9 @@ Full code at [[https://github.com/matryer/try]]
 
 * Semaphores
 
-.play semaphores.go /START OMIT/,/END OMIT/
+Limit the number of goroutines running at once
+
+.code semaphores.go /START OMIT/,/END OMIT/
 
 * Debug logs with a build tag
 
