@@ -24,11 +24,13 @@ func Decode(r io.Reader, v interface{}) error {
 	if err != nil {
 		return err
 	}
-	if obj, ok := v.(Valid); ok {
-		err = obj.OK()
-		if err != nil {
-			return err
-		}
+	obj, ok := v.(Valid)
+	if !ok {
+		return nil // no OK method
+	}
+	err = obj.OK()
+	if err != nil {
+		return err
 	}
 	return nil
 }
