@@ -1,5 +1,5 @@
 Idiomatic Go Tricks
-Go UK Confernece - London, UK
+Go UK Conference - London, UK
 18 Aug 2016
 Tags: Idiomatic, Golang, Tips
 
@@ -188,7 +188,7 @@ Add a new type which is a slice of the interface
 
 .code many-items.go /TWO OMIT/,/TWO END OMIT/
 
-- The slice type implenents the `Sizer` interface
+- The slice type implements the `Sizer` interface
 - Now a set of objects can be used in `Fits` and `IsEmailable` functions
 
 * Other ways to implement the interface
