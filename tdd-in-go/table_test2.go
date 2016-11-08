@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/cheekybits/is"
 )
 
 var tests = []struct {
@@ -32,20 +32,22 @@ var tests = []struct {
 
 // START OMIT
 func TestAll(t *testing.T) {
-	assert := assert.New(t)
 	server := httptest.NewServer(&myhandler{}) // HL
 	defer server.Close()                       // HL
 	for _, test := range tests {
-		r, err := http.NewRequest(test.Method, server.URL+test.Path, test.Body) // HL
-		assert.NoError(err)
-		// call handler
-		response, err := http.DefaultClient.Do(r) // HL
-		assert.NoError(err)
-		actualBody, err := ioutil.ReadAll(response.Body)
-		assert.NoError(err)
-		// make assertions
-		assert.Contains(actualBody, test.BodyContains, "body")        // HL
-		assert.Equal(test.Status, response.StatusCode, "status code") // HL
+		t.Run(test.Method + " " + test.Path, func(t *testing.T) {
+			is := is.New(t)
+			r, err := http.NewRequest(test.Method, server.URL+test.Path, test.Body) // HL
+			is.NoErr(err)
+			// call handler
+			response, err := http.DefaultClient.Do(r) // HL
+			is.NoErr(err)
+			actualBody, err := ioutil.ReadAll(response.Body)
+			is.NoErr(err)
+			// make assertions
+			is.True(strings.Contains(string(actualBody), test.BodyContains))        // HL
+			is.Equal(test.Status, response.StatusCode) // HL
+		})
 	}
 }
 

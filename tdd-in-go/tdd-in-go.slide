@@ -1,10 +1,22 @@
 TDD in Go
-GDG DevFest, Berlin
+Movember Gophers Meetup, Berlin
 12 Nov 2016
 
 Mat Ryer
 https://matryer.com/
 @matryer
+
+* About me
+
+- Using Go for ages (since before BETA)
+- Author of Go Programming Blueprints: Second Edition
+- Working at [[http://GrayMeta.com]] (100% Go backend)
+- Founded Testify, Silk and Moq testing packages
+- Made BitBar app for Mac OS X - [[https://getbitbar.com]] is a Go/AppEngine project
+- Blog about Go on [[http://matryer.com]]
+- Not Banksy
+
+.image gopher-mat.png
 
 * Purpose of this talk
 
@@ -57,6 +69,28 @@ Try TDD if you haven't, apply it more if you have.
 - Making real HTTP requests
 - Tests the full stack (including middleware)
 
+* Silk
+
+Write markdown documentation describing an API, and then execute it against a real endpoint.
+
+    # Google search
+    
+    This can be run with `silk -silk.url="https://www.google.co.uk"`
+    
+    ## `GET /search`
+    
+    Perform a search for the word `test`.
+    
+    * `?q=test` // The string to search for
+
+    ---
+    
+    * `Status: 200`
+    * `Server: gws`
+    * `Body: /test/`
+
+see [[https://github.com/matryer/silk]]
+
 * Go tools
 
 - go test - runs tests and gives you output
@@ -89,23 +123,55 @@ see [[http://blog.golang.org/cover]]
 - Extra stuff to learn
 - If not just add assert(testing.T, bool), ok(testing.T, thing), etc.
 
-* Testify - Thou shalt write tests
-
-- Familiar assertions pattern
-
-.code testify.go
-
-- see [[https://github.com/stretchr/testify]]
-
 * Mocking
 
 - Use mocked objects in place of real objects when writing test code
 - Removes dependency on external systems
 - Make progress without having an actual implementation
 
-In Testify:
+    // Sender objects can send messages.
+    func Sender interface {
+        Send(to, message) error
+    }
 
-.code mock.go /START OMIT/,/END OMIT/
+    // Greet sends a greeting message.
+    func Greet(s Sender, to, name string) error {
+        return s.Send(to, fmt.Sprintf("Hi %s", name))
+    }
+
+    type MockedSender struct {
+        SendFunc func(to, message) error
+    }
+    func (s *MockedSender) Send(to, message) error {
+        return s.SendFunc(to, message)
+    }
+
+* Using mocks
+
+    func TestGreet(t *testing.T) {
+        var sendCalls int
+        sender := &MockedSender{
+            SendFunc: func(to, message) error {
+                sendCalls++
+                ok(t, to == "@matryer")
+                ok(t, message == "Hi Mat")
+                return nil // could return error to test that
+            },
+        }
+        err := Greet(sender, "@matryer", "Mat")
+        ok(err == nil)
+        ok(sendCalls == 1)
+    }
+
+* Moq tool
+
+Moq generates a mockable struct from any interface.
+
+    //go:generate moq -out myinterface_moq_test.go . MyInterface
+
+.image moq.png
+
+see [[https://github.com/matryer/moq]]
 
 * Interfaces in your code
 
@@ -172,19 +238,6 @@ Test it from an external point of view:
 * Art vs science of testing
 
 - Life-time of code, number of contributors, geography of team, open-source?
-
-Normal error code:
-
-    if err := json.NewEncoder(w).Encode(thing); err != nil {
-      return nil, err
-    }
-
-Unless the errors are part of your API:
-
-    if err := json.NewEncoder(w).Encode(thing); err != nil {
-      return nil, ErrEncoding(err, "tokens")
-    }
-
 - Sometimes you have to add complexity in order to test something - proceed with caution 
 
 * Ideas
@@ -192,6 +245,7 @@ Unless the errors are part of your API:
 - Be similar to Go standard library
 - Prove a bug by submitting a failing test with your bug report
 - Describe new functionality in test code
+- Mock out interfaces and write test implementations
 - Give a failing test to your pair partner
 - Tests as simple as possible
 - Different test package
