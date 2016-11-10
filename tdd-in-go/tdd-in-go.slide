@@ -1,6 +1,6 @@
 TDD in Go
 Movember Gophers Meetup, Berlin
-12 Nov 2016
+10 Nov 2016
 
 Mat Ryer
 https://matryer.com/
@@ -37,6 +37,7 @@ Try TDD if you haven't, apply it more if you have.
 - Prove bugs or missing features
 - Demonstrate the intent
 - Protected from regression
+- Tests become your only promise
 - Write tests for each other
 - Code becomes documentation
 - Get it out of your brain
@@ -54,6 +55,8 @@ Try TDD if you haven't, apply it more if you have.
 * Test code gives you a TODO list
 
 .play -edit test1.go /START OMIT/,/END OMIT/
+
+A mix of errors and failing tests en route to working code
 
 * Testing HTTP endpoints
 
@@ -231,7 +234,7 @@ Test it from an external point of view:
 
 * Building and testing is usually very quick
 
-- On save: build and run all package tests
+On save: build and run all package tests
 
 .image failedtest.png
 
@@ -239,6 +242,16 @@ Test it from an external point of view:
 
 - Life-time of code, number of contributors, geography of team, open-source?
 - Sometimes you have to add complexity in order to test something - proceed with caution 
+
+* Watch out
+
+Don't skip design
+TDD is *not* a replacement for good design
+Think first, then write some tests, then start writing code
+Keep your tests neat and tidy (occasional grooming, etc.)
+Don't let them become a bag of miscellaneous unit tests
+
+For a contrary opinion, read [[http://www.writemoretests.com/2011/09/test-driven-development-give-me-break.html]]
 
 * Ideas
 
