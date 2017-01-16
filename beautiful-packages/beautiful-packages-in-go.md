@@ -22,12 +22,6 @@ Not Banksy
 
 ---
 
-# *Available now*
-
-![inline](https://www.dropbox.com/s/ekipavlfd9f45jd/bookcover-2nd.png?dl=1)
-
----
-
 # *What is a package?*
 
 ---
@@ -417,7 +411,7 @@ What should you be instead of clever?
 
 ---
 
-# *Shameless*
+# *Subliminal*
 
 ![inline](https://www.dropbox.com/s/ekipavlfd9f45jd/bookcover-2nd.png?dl=1)
 
