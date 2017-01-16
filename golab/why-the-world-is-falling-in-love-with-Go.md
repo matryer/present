@@ -17,10 +17,6 @@ GoLab.io
 
 ---
 
-
-
----
-
 # Go is growing
 
 ![inline](https://www.dropbox.com/s/kp569ay6hxi6t3a/golang-trends-4.png?dl=1)
@@ -46,6 +42,17 @@ GoLab.io
 Adjust, Basecamp, BBC, Bit.ly, Bitbucket, Buzzfeed, Booking.com, Brightcove, CloudFlare, CoreOS, DailyMotion, DigitalOcean, Dell, Docker, DropBox, Google, GitHub, GrayMeta, eBay, Embedly, Facebook, GOV.UK, Intel, Medium, Monzo, Netflix, NotOnTheHighStreet, Outdoorsy, Pivotal, SoundCloud, Segment, SendGrid, SongKick, SpaceX, Trenìt!, Twitch, Uber, Yahoo, __and many more... I got bored typing them[^2]__
 
 [^2]: For a more complete list, see [https://github.com/golang/go/wiki/GoUsers](https://github.com/golang/go/wiki/GoUsers)
+
+---
+
+# ![inline](https://www.dropbox.com/s/usjg3jsyf2c9yb9/monzo-card.png?dl=1) Monzo
+
+* A bank - written in Go
+* Microservices architecture
+* Imagine if your current account had an API
+* Search for "Matt Heath golang" to learn more about their tech
+
+^ No question about Go running in production
 
 ---
 
@@ -213,3 +220,24 @@ Everything you need to build web services
 # Builds to a self-contained static binary
 
 ![inline](https://www.dropbox.com/s/27nz6md0yayky8a/cardboard-box.png?dl=1)
+
+---
+
+# How do I introduce Go at work?
+
+![inline](https://www.dropbox.com/s/gcygq6obw9f4lft/skeletons.jpg?dl=1)
+
+^ What if you want to introduce Go but are getting resistence
+
+---
+
+
+
+---
+
+# Thank you
+
+* Twitter: @matryer
+* Blog: matryer.com
+
+<sub>Special thanks to Dave Cheney, Parham Doustdar, Matt Heath, David Hernandez, Bill Kennedy, Brian Ketelsen, Carlisia Pinto, Alex Rodríguez</sub>
