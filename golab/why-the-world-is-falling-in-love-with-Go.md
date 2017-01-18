@@ -17,6 +17,18 @@ GoLab.io
 
 ---
 
+# This talk
+
+* Go's increasing popularity
+* Is Go ready for the big time?
+* Who's using Go? How and why?
+* How you can introduce Go at work
+* Challenge
+
+^ We in Go conference have our view, but people in the world who haven't been exposed to Go yet, and it's our job to take it to them.
+
+---
+
 # Go is growing
 
 ![inline](https://www.dropbox.com/s/kp569ay6hxi6t3a/golang-trends-4.png?dl=1)
@@ -37,6 +49,14 @@ GoLab.io
 
 ---
 
+# Is Go ready for the big time?
+
+Go is already running in production in far more places than you might realise.
+
+It's definitely past the __fad__ stage.
+
+---
+
 # Who's using Go?
 
 Adjust, Basecamp, BBC, Bit.ly, Bitbucket, Buzzfeed, Booking.com, Brightcove, CloudFlare, CoreOS, DailyMotion, DigitalOcean, Dell, Docker, DropBox, Google, GitHub, GrayMeta, eBay, Embedly, Facebook, GOV.UK, Intel, Medium, Monzo, Netflix, NotOnTheHighStreet, Outdoorsy, Pivotal, SoundCloud, Segment, SendGrid, SongKick, SpaceX, Trenìt!, Twitch, Uber, Yahoo, __and many more... I got bored typing them[^2]__
@@ -52,7 +72,8 @@ Adjust, Basecamp, BBC, Bit.ly, Bitbucket, Buzzfeed, Booking.com, Brightcove, Clo
 * Imagine if your current account had an API
 * Search for "Matt Heath golang" to learn more about their tech
 
-^ No question about Go running in production
+^ No question about Go running in production.
+I'm using my card in Italy - doesn't get more 'production ready' than this!
 
 ---
 
@@ -73,7 +94,8 @@ at some terrible reasons...
 
 (I secretly think these are all great reasons)
 
-^ Don't use these to try and convince your boss to let you do something in Go
+^ Don't use these to try and convince your boss to let you do something in Go.
+I've spent a few years talking to people in to Go community...
 
 ---
 
@@ -132,11 +154,12 @@ Easy to get started helps there
 
 # Accessibility
 
+> "Go's simplicity means it's very easy to read or hear; that's especially important to me"
+-- Parham Doustdar
+
 ![inline](https://www.dropbox.com/s/cy16anzo5ca8t49/parhamdoustdar.jpeg?dl=1)
 
-* Meet Parham Doustdar a Blind Go programmer from Tehran, Iran
-* Uses a screen reader to read code
-* "Go's simplicity means it's very easy to read or hear; that's especially important to me"
+* Blind Go programmer from Tehran, Iran, who uses a screen reader
 
 ^ We glance at code to understand it, if it has to be read out
 you can see why not having semi-colons is pretty attractive.
@@ -158,8 +181,7 @@ you can see why not having semi-colons is pretty attractive.
 * Low investment: don't mind trying things or even throwing bits away
 
 ^ `gofmt` all Go code looks the same
-Don't mind throwing things away because you haven't invested all this
-effort up-front.
+Don't mind throwing things away because you haven't invested all this effort up-front.
 
 ---
 
@@ -171,7 +193,11 @@ effort up-front.
 
 # Performance
 
+> "We had a spike of about 2.4 million requests within ten minutes, and forgot to turn caching on! Luckily, since it only touched our Go code, it didn’t matter; we didn’t crash."
+-- Dean Elbaz, SongKick
 
+^ Without much effort, Go will perform great.
+Doesn't mean you don't have to worry about it - but it's nice to have a headstart.
 
 ---
 
@@ -179,6 +205,9 @@ effort up-front.
 # (and an excellent standard library)
 
 ![inline](https://www.dropbox.com/s/9as6scdnjh5b0he/apples.jpg?dl=1)
+
+^ Go is a modern language, and was designed within the context of how we ended up writing and deploying software.
+Changed a lot in last ten years.
 
 ---
 
@@ -200,20 +229,20 @@ effort up-front.
 ```
 
 ^ sync package too.
-Design: Even on a single core processor (where you would get no benefit) the
-code design might still improve productivity.
+Design: Even on a single core processor (where you would get no benefit) the code design might still improve productivity.
 
 ---
 
 # `net/http` package
 
-> "The http packages comprehensiveness has made building and running a load of http servers super easy, which given we'd picked a service oriented architecture definitely made that faster."
+> "The http package's comprehensiveness has made building and running a load of http servers super easy, which given we'd picked a service oriented architecture definitely made that faster."
 -- Matt Heath, Monzo
 
 ![inline](https://www.dropbox.com/s/kb842aurrwxnq92/heath.jpg?dl=1)
 
-^ World class HTTP capabilities
-Everything you need to build web services
+^ Standard library is awesome. Built by world class engineers.
+Extremely high standards.
+World class HTTP capabilities: Everything you need to build web services
 
 ---
 
@@ -223,15 +252,67 @@ Everything you need to build web services
 
 ---
 
-# How do I introduce Go at work?
+# Builds to a self-contained static binary
 
-![inline](https://www.dropbox.com/s/gcygq6obw9f4lft/skeletons.jpg?dl=1)
+> "Deployments are extremely simple when you just have a self-contained binary without having to worry about special runtimes, package managers, external dependencies, proxies, or anything like that."
+-- Ernesto Jiménez, [Slackline.io](https://Slackline.io)
 
-^ What if you want to introduce Go but are getting resistence
+![inline](https://www.dropbox.com/s/ebbpgpfxv54dklz/ernesto.png?dl=1)
+
+^ `go build` produces an executable binary whose only dependency is the operating system
+Other languages have specific dependencies, usually a specific version
+It means the binaries can be chunky - but in modern situations, it's the right choice.
 
 ---
 
+# How to introduce Go at work
 
+![inline](https://www.dropbox.com/s/gcygq6obw9f4lft/skeletons.jpg?dl=1)
+
+^ What if you want to introduce Go but are getting resistence?
+
+* Is your team resistant?
+* Too busy to "try something new"
+* "It's too risky"
+
+---
+
+# Build something
+
+* Solve a little annoying problem for your team
+* Do a short presentation after stand-up
+* Show the code, talk about how it works
+* Invite others to play with it, and even add a feature
+
+^ Build something in your spare time
+Pick something small, that's not on the roadmap
+
+---
+
+# Challenge
+
+__Introduce three new people to Go__
+
+1. Existing programmer friend 
+1. Someone you work with now (maybe your boss?)
+1. Younger family member who has never coded before
+
+Share your progress on Twitter with #golangshare
+
+<sub>TIP: Take a picture of this screen</sub>
+
+^ Send them a video.
+Show them some Go code.
+Link them to https://tour.golang.org/
+You can do this anytime - if you're watching this video in the future
+
+---
+
+# Challenge ideas
+
+* Send them your favourite Go video
+* Show them some code you've written and explain it
+* Sit down and go through [https://tour.golang.org/](https://tour.golang.org/) with them
 
 ---
 
@@ -240,4 +321,4 @@ Everything you need to build web services
 * Twitter: @matryer
 * Blog: matryer.com
 
-<sub>Special thanks to Dave Cheney, Parham Doustdar, Matt Heath, David Hernandez, Bill Kennedy, Brian Ketelsen, Carlisia Pinto, Alex Rodríguez</sub>
+<sub>Special thanks to Dave Cheney, Parham Doustdar, Dean Elbaz, Matt Heath, David Hernández, Ernesto Jiménez, Bill Kennedy, Brian Ketelsen, Carlisia Pinto, Alex Rodríguez</sub>
