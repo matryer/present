@@ -236,7 +236,7 @@ Changed a lot in last twenty years.
 
 ---
 
-# Concurrency
+# __Concurrency__
 
 * Make the most of the CPU
 * Easy to run code in the background:
@@ -258,7 +258,7 @@ Design: Even on a single core processor (where you would get no benefit) the cod
 
 ---
 
-# `net/http` package
+# *`net/http`* __package__
 
 > "The http package's comprehensiveness has made building and running a load of http servers super easy, which given we'd picked a service oriented architecture definitely made that faster."
 -- Matt Heath, Monzo
@@ -271,7 +271,7 @@ World class HTTP capabilities: Everything you need to build web services
 
 ---
 
-# Builds to a self-contained static binary
+# __Builds to a self-contained static binary__
 
 ![inline](https://www.dropbox.com/s/27nz6md0yayky8a/cardboard-box.png?dl=1)
 
@@ -281,7 +281,7 @@ NEXT: Great for deployment
 
 ---
 
-# Builds to a self-contained static binary
+# __Builds to a self-contained static binary__
 
 > "Deployments are extremely simple when you just have a self-contained binary without having to worry about special runtimes, package managers, external dependencies, proxies, or anything like that."
 -- Ernesto Jiménez, [Slackline.io](https://Slackline.io)
@@ -301,7 +301,7 @@ It means the binaries can be chunky - but in modern situations, it's the right c
 ^ What if you want to introduce Go but are getting resistence?
 
 * Is your team *resistant*?
-* Too busy to *"try something new"*
+* Too busy to "*try something new*"
 * "It's too *risky*"
 
 ---
