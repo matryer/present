@@ -15,6 +15,8 @@ GoLab.io
 * __Work__ GrayMeta - 100% Go backend
 * Not Banksy
 
+^ NEXT: Great talks today
+
 ---
 
 # This talk
@@ -24,8 +26,6 @@ GoLab.io
 * Who's using Go? How and why?
 * How you can introduce Go at work
 * Challenge
-
-^ We in Go conference have our view, but people in the world who haven't been exposed to Go yet, and it's our job to take it to them.
 
 ---
 
@@ -55,6 +55,8 @@ Go is already running in production in far more places than you might realise.
 
 It's definitely past the __fad__ stage.
 
+> "Abbiamo certamente superato la fase 'capriccio'"
+
 ---
 
 # Who's using Go?
@@ -63,54 +65,65 @@ Adjust, Basecamp, BBC, Bit.ly, Bitbucket, Buzzfeed, Booking.com, Brightcove, Clo
 
 [^2]: For a more complete list, see [https://github.com/golang/go/wiki/GoUsers](https://github.com/golang/go/wiki/GoUsers)
 
+^ Lots of companies
+Not insignificant use
+e.g. Not just a dev tool 
+Critical stuff is written in Go
+
 ---
 
-# ![inline](https://www.dropbox.com/s/usjg3jsyf2c9yb9/monzo-card.png?dl=1) Monzo
+# Go success stories
 
-* A bank - written in Go
-* Microservices architecture
-* Imagine if your current account had an API
-* Search for "Matt Heath golang" to learn more about their tech
+* Monzo - A bank[^5] ![inline](https://www.dropbox.com/s/usjg3jsyf2c9yb9/monzo-card.png?dl=1) 
+* Slackline.io - Shared channels between Slack teams 💬
+* Outdoorsy - AirBnB for RVs 🚐
 
-^ No question about Go running in production.
-I'm using my card in Italy - doesn't get more 'production ready' than this!
+[^5]: Search for "Matt Heath Golang" for talks about Go microservices at Monzo
+
+^Different kinds of projects
+Monzo: Using my card in Italy to pay for things
+Slackline: Message brokering
+Outdoorsy: Forgiven for mistaking it for Rails site
+SpaceX: Telemetry system
+Google obviously
 
 ---
 
 # Why?
 
-^ Before we investigate why this is happening, let's look
+^ NEXT: Before we investigate why this is happening, let's look
 at some terrible reasons...
 
 ---
 
-# Terrible reasons to choose Go
+# "Terrible reasons" to choose Go
 
-* Trendy & different
+* Trendy & new & different
 * Doesn't have semicolons
 * Google made it
-* I <3 Go
+* I 💛 Go
 * Opensource
 
 (I secretly think these are all great reasons)
 
 ^ Don't use these to try and convince your boss to let you do something in Go.
-I've spent a few years talking to people in to Go community...
+NEXT: I've spent a few years talking to people in to Go community...
 
 ---
 
 # The top reasons
 
 * Simplicity & minimalism
-* Productivity (especially `gofmt`)
+* Productivity
 * Performance
 * Modern language features and excellent standard library
 * Builds to a self-contained static binary
 
-^ Simplicity: Obvious but Go codifies into the langauge
-Productivity: Developers can quickly get stuff done
+^ In no particular order.
+Simplicity: Obvious but Go codifies into the langauge
+Productivity: Developers can quickly get stuff done 
 Performance: Even when you don't optimise code, it runs quickly
-Built-in concurrency: Get the most out of a processor by using all the cores
+Modern features: Recent language means it has more context
 Static binary: Again simple, binary with no other dependencies is dev ops dream
 
 ---
@@ -170,6 +183,8 @@ you can see why not having semi-colons is pretty attractive.
 
 ![inline](https://www.dropbox.com/s/kwcvvtmrd6x7a2a/working.jpg?dl=1)
 
+^ Could argue it's the most important?
+
 ---
 
 # Productivity
@@ -182,6 +197,7 @@ you can see why not having semi-colons is pretty attractive.
 
 ^ `gofmt` all Go code looks the same
 Don't mind throwing things away because you haven't invested all this effort up-front.
+Leads to feeling more free to be creative
 
 ---
 
@@ -193,11 +209,12 @@ Don't mind throwing things away because you haven't invested all this effort up-
 
 # Performance
 
-> "We had a spike of about 2.4 million requests within ten minutes, and forgot to turn caching on! Luckily, since it only touched our Go code, it didn’t matter; we didn’t crash."
+> "We had a spike of about __2.4 million requests within ten minutes__, and forgot to turn caching on! Luckily, since it only touched our Go code, it didn’t matter; we didn’t crash."
 -- Dean Elbaz, SongKick
 
 ^ Without much effort, Go will perform great.
 Doesn't mean you don't have to worry about it - but it's nice to have a headstart.
+Compiles quick too (build and test on save)
 
 ---
 
@@ -206,8 +223,9 @@ Doesn't mean you don't have to worry about it - but it's nice to have a headstar
 
 ![inline](https://www.dropbox.com/s/9as6scdnjh5b0he/apples.jpg?dl=1)
 
-^ Go is a modern language, and was designed within the context of how we ended up writing and deploying software.
-Changed a lot in last ten years.
+^ Lets hear it for the std lib.
+Go is a modern language, and was designed within the context of how we ended up writing and deploying software.
+Changed a lot in last twenty years.
 
 ---
 
@@ -250,6 +268,10 @@ World class HTTP capabilities: Everything you need to build web services
 
 ![inline](https://www.dropbox.com/s/27nz6md0yayky8a/cardboard-box.png?dl=1)
 
+^ You end up with a single native binary
+Contains EVERYTHING it needs to run
+NEXT: Great for deployment
+
 ---
 
 # Builds to a self-contained static binary
@@ -277,12 +299,19 @@ It means the binaries can be chunky - but in modern situations, it's the right c
 
 ---
 
-# Build something
+# [fit] If you want to introduce Go to your team
+# [fit] __build something__ small.
+
+---
+
+# Build something small
 
 * Solve a little annoying problem for your team
 * Do a short presentation after stand-up
 * Show the code, talk about how it works
 * Invite others to play with it, and even add a feature
+* Put it on GitHub and ask for reviews too
+<sub>Check out the `#reviews` channel on `gophers.slack.com`</sub>
 
 ^ Build something in your spare time
 Pick something small, that's not on the roadmap
@@ -301,24 +330,20 @@ Share your progress on Twitter with #golangshare
 
 <sub>TIP: Take a picture of this screen</sub>
 
-^ Send them a video.
-Show them some Go code.
-Link them to https://tour.golang.org/
-You can do this anytime - if you're watching this video in the future
-
 ---
 
 # Challenge ideas
 
 * Send them your favourite Go video
-* Show them some code you've written and explain it
-* Sit down and go through [https://tour.golang.org/](https://tour.golang.org/) with them
+* Show them some code you've written
+* Go through [https://tour.golang.org/](https://tour.golang.org/) with them
 
 ---
 
 # Thank you
 
-* Twitter: @matryer
-* Blog: matryer.com
+* __Twitter__ `@matryer`
+* __gophers.slack.com__ `matryer`
+* __Blog__ `matryer.com`
 
 <sub>Special thanks to Dave Cheney, Parham Doustdar, Dean Elbaz, Matt Heath, David Hernández, Ernesto Jiménez, Bill Kennedy, Brian Ketelsen, Carlisia Pinto, Alex Rodríguez</sub>
