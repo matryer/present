@@ -85,8 +85,12 @@ NEXT: Hands up if you've used the Internet recently.
 
 ---
 
+# __CloudFlare__
+
 > "If you've used the Internet recently, you've used CloudFlare and many Go programs handled your requests."
 -- John Graham-Cumming, CloudFlare
+
+![inline](https://www.dropbox.com/s/fye3q9hlmptpz4a/john-graham-cumming.jpg?dl=1)
 
 ---
 
@@ -218,6 +222,8 @@ Leads to feeling more free to be creative
 
 > "We had a spike of about 2.4 million requests within ten minutes, and forgot to turn caching on! Luckily, since it only touched our Go code, it didn’t matter; we didn’t crash."
 -- Dean Elbaz, SongKick
+
+![inline](https://www.dropbox.com/s/5f3fwq68x3mrr83/elbaz.jpeg?dl=1)
 
 ^ Without much effort, Go will perform great.
 Doesn't mean you don't have to worry about it - but it's nice to have a headstart.
