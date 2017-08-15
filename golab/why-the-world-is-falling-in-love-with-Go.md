@@ -185,6 +185,13 @@ Don't mind throwing things away because you haven't invested all this effort up-
 
 ---
 
+# Productivity
+
+> "When building a startup, you have to start by solving a single problem as simply as possible. Go enabled us to build powerful, defect-free capabilities for customers quickly (and therefor cheaply) delivering value to them and confidence to our investors."
+-- Aaron Edell, GrayMeta
+
+---
+
 # Performance
 
 ![inline](https://www.dropbox.com/s/vf0k2y9lef9bbh6/salmon.jpg?dl=1)
