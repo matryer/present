@@ -201,6 +201,13 @@ People will look at your source if they're thinking of using your package
 
 # *Subfolders*
 
+* `cmd` - for commands
+* `pkg` - for package code
+* `testdata` - for, you guessed it, test data
+* `internal` - for internal stuff that only your code will import
+* `docs` - additional documentation
+* Be sensible
+
 ---
 
 # *Listen to @rakyll*[^1]
@@ -641,20 +648,26 @@ Shout out the project name that these logos belong to...
 
 # *Computers can help too*
 
+* go lint
+
+* go vet
+
 * [github.com/alecthomas/gometalinter](https://github.com/alecthomas/gometalinter) - runs many linters
 
 * [goreportcard.com](https://goreportcard.com/) 
 
 ---
 
-![inline](https://www.dropbox.com/s/iu053rk9y2pd9qn/goreportcard.png?dl=1)
+# Go Report Card - goreportcard.com
+
+![inline](https://www.dropbox.com/s/iu053rk9y2pd9qn/goreportcard.png?dl=1&s)
 
 ---
 
 # How to spot a quality package
 
 * Did they use `go fmt`?
-* Are there `_.test.go` files?
+* Are there `_test.go` files?
 * Does the code read well? Do the names sound weird? Does it feel like Go code?
 * Have they just ported from a different language? (Are they using Java names?)
 * How many dependencies does it have? (less is better)
