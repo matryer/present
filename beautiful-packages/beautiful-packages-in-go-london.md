@@ -16,6 +16,15 @@ London, August 2017
 
 ---
 
+# [fit] *What on earth are you talking about?*
+
+* Package
+* Library
+* Program
+* Command
+
+---
+
 # *What is a package / library?*
 
 *Folder* full of `.go` (and hopefully `_test.go`) files
