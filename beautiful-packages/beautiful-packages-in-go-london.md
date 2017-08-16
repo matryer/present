@@ -1,13 +1,20 @@
-# *Writing Beautiful Packages in Go*
+# [fit] *Writing Beautiful Packages in Go*
+
+Mat Ryer
+@matryer
+
+Golang UK Conference
+London, August 2017
+
+![](https://www.dropbox.com/s/rju5s6e3rffqq8n/londonoptimised.jpg?dl=1)
 
 ---
 
-# *Mat Ryer*
+# *Who is Mat Ryer?*
 
 ![inline](https://www.dropbox.com/s/5a6z48ul8g13em6/ThisIsMat.JPG?dl=1&egg=true)
 
 ---
-
 
 # *What is a package / library?*
 
@@ -32,6 +39,28 @@ Obvious (maybe even boring)
 You already know how to use it
 
 Look forward to using it
+
+---
+
+# *Motivation*
+
+Do you have the right motivation for writing a package?
+
+Don't write packages for the sake of it
+
+Are you excited to write it or does it sound boring?
+
+If you aren't solving a problem you have, don't bother
+
+---
+
+# *Keep packages internal to start with*
+
+Don't automatically open-source your packages
+
+Live with them first internally
+
+But design them as if you will one day
 
 ---
 
@@ -71,7 +100,15 @@ Are they building a PoC? Or is this part of a bigger system?
 
 ---
 
-# "I like specific things..."
+# [fit] "I like specific things..."
+
+![](https://www.dropbox.com/s/b9w8agkm9az4acx/SpitalfieldsMarket.jpg?dl=1)
+
+---
+
+# [fit] *Smaller footprints are better*
+
+![inline](https://www.dropbox.com/s/tq0y5b2o2j2lkn9/package-footprint.png?dl=1)
 
 ---
 
@@ -162,8 +199,13 @@ People will look at your source if they're thinking of using your package
 
 ---
 
+# *Subfolders*
+
+---
+
 # *Listen to @rakyll*[^1]
 
+* Use multiple `.go` files
 * Keep types close to where they're used
 * Organise by responsibility (`User` type goes into `users.go`)
 * Optimise for `godoc` and provide examples
@@ -206,7 +248,9 @@ thing.DoAmazingThing()
 
 ---
 
-# *You are probably the first user of your package*
+# *You are probably (hopefully) the first user of your package*
+
+Force yourself to see things from the user's point of view...
 
 ---
 
@@ -217,10 +261,6 @@ Use the package before it even exists
 Try different things
 
 Aware of the API footprint from the very beginning
-
-TRY: Put test code in different package
-
-TRY: Use `godoc` early: `godoc -http=:8080`
 
 ---
 
@@ -243,6 +283,18 @@ The 3 hardest things in coding are:
 2. Invalidating the cache
 
 3. Invalidating the cache
+
+PROPER JOKE
+
+---
+
+# *3 hardest things...*
+
+The 3 hardest things in coding are:
+
+1. Naming things
+
+2. Off by one errors
 
 ---
 
@@ -282,43 +334,30 @@ err := tea.Brew(1 * time.Minute)
 
 ---
 
+# *Expose yourself to the API footprint from the beginning*
+
+* Put test code in different package
+
+```go
+package proj_test
+
+func Test(t *testing.T) {
+	g := proj.FormatGreeter("Hi %s")
+	g.Greet("Piotr")
+}
+```
+
+* Definitely do this for examples
+* Use `godoc` early: `godoc -http=:8080`
+
+---
+
 # *Don't log stuff out*
 
 ...or at least let users turn it off
 
 ---
 
-# *Subpackages are just packages*
-
-```go
-import "github.com/matryer/vice/test"
-
-func TestTransport(t *testing.T) {
-	test.Transport(t, newTestTransport)
-}
-```
-
-changed to
-
-```go
-import "github.com/matryer/vice/vicetest"
-
-func TestTransport(t *testing.T) {
-	vicetest.Transport(t, newTestTransport)
-}
-```
-
----
-
-# *Come up with a good name*
-
-* Short
-* Clear
-* To the point
-* Be creative, and have fun
-* Not every Go project needs to mention Go
-
----
 
 # *Make zero values useful*
 
@@ -340,9 +379,9 @@ func (g Greeter) Greet(name string) string {
 ```go
 func main() {
 	var g Greeter
-	fmt.Println(g.Greet("David Hernandez"))
+	fmt.Println(g.Greet("Dean"))
 }
-// output: Hi David Hernandez
+// output: Hi Dean
 ```
 
 or
@@ -352,9 +391,9 @@ func main() {
 	g := Greeter{
 		Format: "Hey there, %s",
 	}
-	fmt.Println(g.Greet("David Hernandez"))
+	fmt.Println(g.Greet("Dean"))
 }
-// output: Hey there, David Hernandez
+// output: Hey there, Dean
 ```
 
 ---
@@ -399,6 +438,36 @@ No need for both `Greeter` and `FormatGreeter`
 
 ---
 
+# *Another way to shrink the API footprint...*
+
+```go
+type Greeter interface {
+	Greet(name string) string
+}
+
+func FormatGreeter(format string) Greeter {
+	return formatGreeter{format: format}
+}
+
+type formatGreeter struct {
+	format string
+}
+
+func (g formatGreeter) Greet(name string) string {
+	return fmt.Sprintf(g.format, name)
+}
+```
+
+---
+
+# *Use Go-like names*
+
+* `time.ParseTimeString` -> `time.Parse`
+* `MarshalWithIndentation` -> `MarshalIndent`
+* `TearDown` -> `Close`
+
+---
+
 # *Ask the user for `http.Client`*
 
 If your package makes HTTP requests, ask the user to provide a `http.Client`
@@ -430,9 +499,47 @@ func StartSomethingAmazing(ctx context.Context, region string, intensity int) {
 
 ---
 
+# *Subpackages are just packages*
+
+```go
+import "github.com/matryer/vice/test"
+
+func TestTransport(t *testing.T) {
+	test.Transport(t, newTestTransport)
+}
+```
+
+changed to
+
+```go
+import "github.com/matryer/vice/vicetest"
+
+func TestTransport(t *testing.T) {
+	vicetest.Transport(t, newTestTransport)
+}
+```
+
+---
+
+# *Come up with a good name*
+
+* Short
+* Clear
+* To the point
+* Be creative, and have fun
+* Not every Go project needs to mention Go
+
+---
+
 # *Give your project a logo or mascot*
 
+Projects that have a logo, are 85% more likely to get used[^2]
+
+Great way for artists to contribute to open-source projects
+
 Not kidding...
+
+[^2]: Totally made up statistics because we're fine with fake news now
 
 ---
 
@@ -502,6 +609,26 @@ Shout out the project name that these logos belong to...
 
 ---
 
+![inline](https://www.dropbox.com/s/54ny52zs5ybrawn/nsq.png?dl=1)
+
+---
+
+![inline](https://www.dropbox.com/s/54ny52zs5ybrawn/nsq.png?dl=1)
+
+# [fit] *NSQ*
+
+---
+
+![inline](https://www.dropbox.com/s/8ndkab5jf1prp2x/hugo-logo.png?dl=1)
+
+---
+
+![inline](https://www.dropbox.com/s/8ndkab5jf1prp2x/hugo-logo.png?dl=1)
+
+# [fit] *Hugo*
+
+---
+
 ![inline](https://www.dropbox.com/s/yyq0t4kfkh01sad/github.png?dl=1)
 
 ---
@@ -512,15 +639,15 @@ Shout out the project name that these logos belong to...
 
 ---
 
-![inline](https://www.dropbox.com/s/ekipavlfd9f45jd/bookcover-2nd.png?dl=1)
+# *Computers can help too*
+
+* [github.com/alecthomas/gometalinter](https://github.com/alecthomas/gometalinter) - runs many linters
+
+* [goreportcard.com](https://goreportcard.com/) 
 
 ---
 
-# *Computers can help too*
-
-[github.com/alecthomas/gometalinter](github.com/alecthomas/gometalinter)
-
-[goreportcard.com](github.com/alecthomas/gometalinter)
+![inline](https://www.dropbox.com/s/iu053rk9y2pd9qn/goreportcard.png?dl=1)
 
 ---
 
